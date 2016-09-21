@@ -1,0 +1,90 @@
+<html ng-app="tableApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Table sorting and filtering example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body ng-app="tableApp">
+    <div class="container" ng-controller="tableController">
+      <h1>Table sorting and filtering example</h1>
+      <form>
+        <div class="form-group">
+          <div class="input-group">
+            <div><i class="fa fa-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search for item" ng-model="query.productDescription">
+          </div>
+        </div>
+      </form>
+      <div class="btn-group">
+        <select class="form-control" ng-model="isAssetClassDescriptions" ng-options="isAssetClassDescription for isAssetClassDescription in holdingTypes"></select>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Largest
+        <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+          <li><a href="#" ng-click="order('marketValueInTargetCcy')">Largest</a></li>
+          <li><a href="#" ng-click="order('marketValueInTargetCcy')">Smallest</a></li>
+        </ul>
+      </div>
+      <div class="btn-group">
+        <select class="form-control" ng-model="itemsPerPage" ng-change="perPage()" ng-options="('show '+size) for size in pageSizes"></select>
+      </div>
+      <table class="table table-striped">
+      <tr>
+        <th>
+          <a href="" ng-click="order('productDescription')">Holding</a>
+          <span class="glyphicon sort-icon" ng-show="predicate==='productDescription'" ng-class="{'glyphicon-triangle-bottom':reverse,'glyphicon-triangle-top':!reverse}"></span>
+        </th>
+        <th>
+          <a href="" ng-click="order('productSymbol')">Symbol</a>
+          <span class="glyphicon sort-icon" ng-show="predicate==='productSymbol'" ng-class="{'glyphicon-triangle-bottom':reverse,'glyphicon-triangle-top':!reverse}"></span>
+        </th>
+        <th>
+          <a href="" ng-click="order('marketValueInTargetCcy')">Market Price</a>
+          <span class="glyphicon sort-icon" ng-show="predicate==='marketValueInTargetCcy'" ng-class="{'glyphicon-triangle-bottom':reverse,'glyphicon-triangle-top':!reverse}"></span>
+        </th>
+        <th>
+          <a href="" ng-click="order('todaysGainLossPercentage')">Change</a>
+          <span class="glyphicon sort-icon" ng-show="predicate==='todaysGainLossPercentage'" ng-class="{'glyphicon-triangle-bottom':reverse,'glyphicon-triangle-top':!reverse}"></span>
+        </th>
+        <th>
+           <a href="" ng-click="order('isAssetClassDescription')">Asset Class</a>
+           <span class="glyphicon sort-icon" ng-show="predicate==='isAssetClassDescription'" ng-class="{'glyphicon-triangle-bottom':reverse,'glyphicon-triangle-top':!reverse}"></span>
+        </th>
+      </tr>
+      <tr ng-repeat="item in pagedItems[currentPage] | orderBy:predicate:reverse | filter:isAssetClassDescriptions:true | filter:query:strict">
+        <td>{{item.productDescription}}</td>
+        <td>{{item.productSymbol}}</td>
+        <td>{{item.marketValueInTargetCcy}}</td>
+        <td>{{item.todaysGainLossPercentage}}</td>
+        <td>{{item.isAssetClassDescription}}</td>
+      </tr>
+      <tfoot>
+        <tr><td colspan="9">
+          <div class="text-center">
+            <ul class="pagination">
+              <li ng-class="{disabled: currentPage == 0}">
+                <a href="javascript:;" ng-click="prevPage()">« Prev</a>
+              </li>
+              <li ng-repeat="n in range(pagedItems.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
+                <a href="javascript:;" ng-bind="n + 1">1</a>
+              </li>
+              <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                <a href="javascript:;" ng-click="nextPage()">Next »</a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    </tfoot>
+    </table>
+    </div>
+  </body>
+</html>
